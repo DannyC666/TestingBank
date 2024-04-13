@@ -8,10 +8,10 @@
 <body>
 
 <h1>Seleccione si es Usuario o Empleado:</h1>
-<h2>Entrar como usuario </h2>
+<h2>Opciones de usuario </h2>
 <form method="POST">
     {% csrf_token %}
-    <!-- Aquí es donde puedes usar el formulario Django si prefieres -->
+
     <select name="client_id">
         {% for client in clients %}
             <option value="{{ client.id }}">{{ client.name }}</option>
@@ -22,13 +22,26 @@
     <button type="submit"> entrar </button>
 
 </form>
-<h2>Entrar como empleado </h2>
- <form method="get" action="{% url 'select_client' %}">
-    <label for="employee">Empleado:</label>
-    <input type="radio" id="employee" name="role" value="employee">
-    <br>
-    <input type="submit" value="Enviar">
-</form> 
+
+<h2>Opciones de empleado </h2>
+<h4>Formulario de confirmacion </h3>
+    <form method="POST" >
+        {% csrf_token %}
+        <label for="cliente">Seleccione un cliente:</label>
+        <select name="cliente_id" id="cliente_id">
+            {% for client in clients %}
+            <option value="{{ client.id }}">{{ client.name }}</option>
+            {% endfor %}
+        </select>
+
+        <p>¿Confirmar al cliente?</p>
+        <input type="radio" id="confirmado" name="isConfirmed" value="True">
+        <label for="confirmado">Sí</label><br>
+        <input type="radio" id="no_confirmado" name="isConfirmed" value="False">
+        <label for="no_confirmado">No</label><br>
+
+        <button type="submit">Actualizar</button>
+    </form>
 
 </body>
 </html>
