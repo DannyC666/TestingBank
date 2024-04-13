@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Client
 from .forms import ClientSelectForm
-
+from .services import form_data
 # Create your views here.
 def client_product(request, pk):
     client_chosen = Client.objects.get(id=pk)
@@ -32,5 +32,22 @@ def select_client(request):
     # elif role == 'employee':
     #     #TODO: Redirigir a pagina de empleado
     #     pass
-    
+
     return render(request, 'selectClient.html')
+
+def update_client_confirmation(request):
+ 
+    if request.method == 'POST':
+        client_id = request.POST.get('cliente_id')
+    
+        is_confirmed = request.POST.get('isConfirmed') == 'True'
+        client = get_object_or_404(Client, id=client_id)
+        client.isConfirmed = is_confirmed
+        client_get_id = client.id
+        confirm_updated = client.isConfirmed 
+        form_data.publication_update(client_get_id, confirm_updated)
+        client.save()
+        
+        return HttpResponse("El estado de confirmación ha sido actualizado.")
+    clients = Client.objects.all()
+    return render(request, 'selectClient.html', {'clients': clients})
